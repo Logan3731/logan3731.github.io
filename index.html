@@ -83,7 +83,24 @@
   .k-lie   { color: #ffd75b; }
 
   footer { margin-top: 36px; color: #565c6e; font-size: 13px; line-height: 1.7; }
-  footer a { color: #6b7183; }
+
+  /* 인스타 링크 — 새 게임 소식을 받을 수 있는 유일한 통로라 눈에 띄게 */
+  .ig {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 10px;
+    padding: 9px 15px;
+    border: 1px solid #2f3542;
+    border-radius: 999px;
+    color: #b6bcca;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background .15s ease, border-color .15s ease;
+  }
+  .ig:hover { background: #1e222b; border-color: #444d61; }
+  .ig-mark { color: #ff5b7b; font-size: 15px; }
 </style>
 </head>
 <body>
@@ -117,7 +134,12 @@
     </a>
   </div>
 
-  <footer id="t-foot"></footer>
+  <footer>
+    <p id="t-foot"></p>
+    <a class="ig" href="https://www.instagram.com/logan__3731/" target="_blank" rel="noopener">
+      <span class="ig-mark">◎</span> @logan__3731
+    </a>
+  </footer>
 </div>
 
 <script>
@@ -132,7 +154,7 @@ const I18N = {
     g2name: '증언',   g2kind: '추리',
     g2desc: '용의자 중 범인 한 명을 찾습니다. 증언 가운데 몇 개가 거짓인지만 알려주고, 누가 거짓말을 했는지는 알려주지 않습니다.',
     g2rule: '<span class="k-lie">거짓의 개수</span>만 알려준다. 누구인지는 직접 좁혀야 한다',
-    foot: '문의나 피드백은 편하게 남겨주세요.',
+    foot: '새 게임 소식과 피드백은 인스타로 받고 있어요.',
   },
   en: {
     title: 'Games I made',
@@ -143,7 +165,7 @@ const I18N = {
     g2name: 'Testimony', g2kind: 'Deduction',
     g2desc: 'Find the culprit among the suspects. You are told how many of the statements are lies — never which ones.',
     g2rule: 'You only learn <span class="k-lie">how many</span> are lying. Who, you work out yourself',
-    foot: 'Feedback is always welcome.',
+    foot: 'New games and feedback — find me on Instagram.',
   },
 };
 
