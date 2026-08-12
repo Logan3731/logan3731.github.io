@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>logan — 게임 모음</title>
+<meta name="description" content="브라우저에서 바로 되는 작은 게임들">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: radial-gradient(120% 80% at 50% 0%, #1e2432 0%, #14161c 55%);
+    color: #e8eaf0;
+    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 48px 20px 64px;
+  }
+
+  #app { width: 100%; max-width: 560px; }
+
+  /* ── 언어 전환 ─────────────────────────── */
+  .lang-bar { display: flex; justify-content: flex-end; gap: 5px; margin-bottom: 28px; }
+  .lang-btn {
+    background: transparent;
+    border: none;
+    color: #565c6e;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 5px 10px;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  .lang-btn.active { background: #1e2129; color: #b6bcca; }
+
+  /* ── 머리말 ────────────────────────────── */
+  h1 { font-size: 26px; font-weight: 800; letter-spacing: -.01em; }
+  .intro { margin-top: 10px; color: #8b91a3; font-size: 15px; line-height: 1.65; }
+
+  /* ── 게임 목록 ─────────────────────────── */
+  .games { margin-top: 34px; display: flex; flex-direction: column; gap: 12px; }
+
+  .game {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    background: #1a1d24;
+    border: 1px solid #232833;
+    border-radius: 14px;
+    padding: 20px 22px;
+    transition: background .15s ease, border-color .15s ease, transform .15s ease;
+  }
+  .game:hover { background: #1e222b; border-color: #333a4a; transform: translateY(-2px); }
+
+  .game-top { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .game-name { font-size: 18px; font-weight: 700; }
+  .game-kind { font-size: 11px; color: #6b7183; letter-spacing: .04em; }
+  .game-desc { margin-top: 9px; color: #8b91a3; font-size: 14px; line-height: 1.6; }
+
+  /* 게임의 핵심 규칙을 한 줄로 */
+  .game-rule {
+    margin-top: 12px;
+    font-size: 13px;
+    color: #b6bcca;
+    background: #12141a;
+    border-radius: 8px;
+    padding: 9px 12px;
+  }
+  .k-chips { color: #5bc8ff; }
+  .k-mult  { color: #ff5b7b; }
+  .k-chain { color: #7bff9b; }
+  .k-lie   { color: #ffd75b; }
+
+  footer { margin-top: 36px; color: #565c6e; font-size: 13px; line-height: 1.7; }
+  footer a { color: #6b7183; }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <div class="lang-bar">
+    <button class="lang-btn" data-lang="ko">한국어</button>
+    <button class="lang-btn" data-lang="en">EN</button>
+  </div>
+
+  <h1 id="t-title">만든 게임들</h1>
+  <p class="intro" id="t-intro"></p>
+
+  <div class="games">
+    <a class="game" href="/first-game/">
+      <div class="game-top">
+        <span class="game-name" id="g1-name"></span>
+        <span class="game-kind" id="g1-kind"></span>
+      </div>
+      <p class="game-desc" id="g1-desc"></p>
+      <div class="game-rule" id="g1-rule"></div>
+    </a>
+
+    <a class="game" href="/testimony/">
+      <div class="game-top">
+        <span class="game-name" id="g2-name"></span>
+        <span class="game-kind" id="g2-kind"></span>
+      </div>
+      <p class="game-desc" id="g2-desc"></p>
+      <div class="game-rule" id="g2-rule"></div>
+    </a>
+  </div>
+
+  <footer id="t-foot"></footer>
+</div>
+
+<script>
+// 게임들과 같은 방식: 고른 언어를 기억하고, 없으면 브라우저 설정을 따른다
+const I18N = {
+  ko: {
+    title: '만든 게임들',
+    intro: '브라우저에서 바로 되는 작은 게임들입니다. 설치도 가입도 없고, 폰에서도 됩니다.',
+    g1name: '연쇄',   g1kind: '카드 로그라이트',
+    g1desc: '포커 족보로 점수를 내는데, 규칙이 하나 다릅니다. 직전에 낸 패보다 칩이 높아야 배수가 쌓이고, 낮으면 처음으로 돌아갑니다. 그래서 좋은 패를 아무 때나 낼 수 없습니다.',
+    g1rule: '점수 = <span class="k-chips">칩</span> × <span class="k-mult">배수</span> × <span class="k-chain">연쇄</span>',
+    g2name: '증언',   g2kind: '추리',
+    g2desc: '용의자 중 범인 한 명을 찾습니다. 증언 가운데 몇 개가 거짓인지만 알려주고, 누가 거짓말을 했는지는 알려주지 않습니다.',
+    g2rule: '<span class="k-lie">거짓의 개수</span>만 알려준다. 누구인지는 직접 좁혀야 한다',
+    foot: '문의나 피드백은 편하게 남겨주세요.',
+  },
+  en: {
+    title: 'Games I made',
+    intro: 'Small games that run right in your browser. No install, no sign-up, works on phones.',
+    g1name: 'Chain', g1kind: 'Card roguelite',
+    g1desc: 'A poker scoring game with one twist: your multiplier only grows if each hand beats the last one in chips. Play a weaker hand and it resets. So you can never spend your best hand whenever you like.',
+    g1rule: 'Score = <span class="k-chips">Chips</span> × <span class="k-mult">Mult</span> × <span class="k-chain">Chain</span>',
+    g2name: 'Testimony', g2kind: 'Deduction',
+    g2desc: 'Find the culprit among the suspects. You are told how many of the statements are lies — never which ones.',
+    g2rule: 'You only learn <span class="k-lie">how many</span> are lying. Who, you work out yourself',
+    foot: 'Feedback is always welcome.',
+  },
+};
+
+function detectLang() {
+  const saved = localStorage.getItem('lang');
+  if (saved && I18N[saved]) return saved;
+  for (const l of (navigator.languages || [navigator.language || ''])) {
+    const c = String(l).toLowerCase();
+    if (c.startsWith('ko')) return 'ko';
+    if (c.startsWith('en')) return 'en';
+  }
+  return 'ko';
+}
+
+let LANG = detectLang();
+
+function apply() {
+  const t = I18N[LANG];
+  const set = (id, v, html) => {
+    const el = document.getElementById(id);
+    if (html) el.innerHTML = v; else el.textContent = v;
+  };
+  set('t-title', t.title);  set('t-intro', t.intro);  set('t-foot', t.foot);
+  set('g1-name', t.g1name); set('g1-kind', t.g1kind); set('g1-desc', t.g1desc);
+  set('g1-rule', t.g1rule, true);
+  set('g2-name', t.g2name); set('g2-kind', t.g2kind); set('g2-desc', t.g2desc);
+  set('g2-rule', t.g2rule, true);
+
+  document.title = t.title;
+  document.documentElement.lang = LANG;
+  document.querySelectorAll('[data-lang]').forEach(b =>
+    b.classList.toggle('active', b.dataset.lang === LANG));
+}
+
+document.querySelectorAll('[data-lang]').forEach(b =>
+  b.onclick = () => { LANG = b.dataset.lang; localStorage.setItem('lang', LANG); apply(); });
+
+apply();
+</script>
+
+</body>
+</html>
