@@ -129,6 +129,7 @@
   .k-mult  { color: #d13b5c; }
   .k-chain { color: #14874a; }
   .k-lie   { color: #a4700a; }
+  .k-tell  { color: #c0392b; }
 
   /* 한 판이 얼마나 걸리는지 — 누르기 전에 제일 궁금한 것 */
   .meta { margin-top: 13px; display: flex; flex-wrap: wrap; gap: 6px; }
@@ -235,6 +236,20 @@
         <div class="play" id="g2-play"></div>
       </div>
     </a>
+
+    <a class="game g3" href="/foresight/">
+      <img class="shot" id="g3-shot" src="shots/foresight-ko.webp" width="1120" height="800" alt="" loading="lazy">
+      <div class="body">
+        <div class="game-top">
+          <span class="game-name" id="g3-name"></span>
+          <span class="game-kind" id="g3-kind"></span>
+        </div>
+        <p class="game-desc" id="g3-desc"></p>
+        <div class="game-rule" id="g3-rule"></div>
+        <div class="meta" id="g3-meta"></div>
+        <div class="play" id="g3-play"></div>
+      </div>
+    </a>
   </div>
 
   <footer>
@@ -266,6 +281,12 @@ const I18N = {
     g2meta: ['사건 12개 연속', '기회 3번', '제한시간'],
     g2alt:  '증언 게임 화면 — 용의자 다섯 명의 진술 목록',
 
+    g3name: '예지',   g3kind: '턴제 전술',
+    g3desc: '적이 다음 턴에 무엇을 할지 전부 미리 보여줍니다. 그래서 운으로 지는 일이 없습니다. 죽이는 것만이 답도 아닙니다 — 밀어서 공격을 빗나가게 하거나, 구덩이로 떨어뜨리거나, 적끼리 부딪히게 만들 수 있습니다.',
+    g3rule: '<span class="k-tell">붉은 칸</span>이 이번 턴에 맞을 자리. 피하는 방법은 하나가 아니다',
+    g3meta: ['6개 층', '한 판 10~15분', '운 없음'],
+    g3alt:  '예지 게임 화면 — 격자 위의 적들과 이번 턴에 공격받을 붉은 칸',
+
     foot: '새 게임 소식과 피드백은 인스타로 받고 있어요.',
   },
   en: {
@@ -285,6 +306,12 @@ const I18N = {
     g2rule: 'You only learn <span class="k-lie">how many</span> are lying. Who, you work out yourself',
     g2meta: ['12 cases in a row', '3 chances', 'Timed'],
     g2alt:  'Testimony gameplay — five suspects and their statements',
+
+    g3name: 'Foresight', g3kind: 'Turn-based tactics',
+    g3desc: 'Every enemy shows you exactly what it will do next turn, so you never lose to luck. Killing is not the only answer either — shove one so its attack misses, drop it down a pit, or line two of them up to hit each other. Korean text only for now.',
+    g3rule: '<span class="k-tell">Red tiles</span> are where the damage lands. There is never just one way out',
+    g3meta: ['6 floors', '10-15 min a run', 'No luck'],
+    g3alt:  'Foresight gameplay — enemies on a grid with red tiles marking this turn\'s attacks',
 
     foot: 'New games and feedback — find me on Instagram.',
   },
@@ -313,7 +340,8 @@ function apply() {
   set('t-role', t.role);
   set('t-title', t.title);  set('t-intro', t.intro);  set('t-foot', t.foot);
 
-  for (const n of ['1', '2']) {
+  const SHOT = { '1': 'chain', '2': 'testimony', '3': 'foresight' };
+  for (const n of ['1', '2', '3']) {
     set(`g${n}-name`, t[`g${n}name`]);
     set(`g${n}-kind`, t[`g${n}kind`]);
     set(`g${n}-desc`, t[`g${n}desc`]);
@@ -324,7 +352,7 @@ function apply() {
     // 사진도 언어를 따라간다. 영어 화면에 한국어 스크린샷이 뜨면 안 된다.
     const img = document.getElementById(`g${n}-shot`);
     img.alt = t[`g${n}alt`];
-    img.src = `shots/${n === '1' ? 'chain' : 'testimony'}-${LANG}.webp`;
+    img.src = `shots/${SHOT[n]}-${LANG}.webp`;
   }
 
   document.title = t.title;
