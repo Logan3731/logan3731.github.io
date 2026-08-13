@@ -24,13 +24,13 @@
     min-height: 100vh;
     display: flex;
     justify-content: center;
-    padding: 48px 20px 64px;
+    padding: 44px 18px 64px;
   }
 
   #app { width: 100%; max-width: 560px; }
 
   /* ── 언어 전환 ─────────────────────────── */
-  .lang-bar { display: flex; justify-content: flex-end; gap: 5px; margin-bottom: 28px; }
+  .lang-bar { display: flex; justify-content: flex-end; gap: 5px; margin-bottom: 26px; }
   .lang-btn {
     background: transparent;
     border: none;
@@ -49,7 +49,7 @@
   .intro { margin-top: 10px; color: #8b91a3; font-size: 15px; line-height: 1.65; }
 
   /* ── 게임 목록 ─────────────────────────── */
-  .games { margin-top: 34px; display: flex; flex-direction: column; gap: 12px; }
+  .games { margin-top: 32px; display: flex; flex-direction: column; gap: 18px; }
 
   .game {
     display: block;
@@ -57,32 +57,67 @@
     color: inherit;
     background: #1a1d24;
     border: 1px solid #232833;
-    border-radius: 14px;
-    padding: 20px 22px;
-    transition: background .15s ease, border-color .15s ease, transform .15s ease;
+    border-radius: 16px;
+    overflow: hidden;                 /* 사진 모서리를 카드에 맞춰 자른다 */
+    transition: border-color .15s ease, transform .15s ease;
   }
-  .game:hover { background: #1e222b; border-color: #333a4a; transform: translateY(-2px); }
 
-  .game-top { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
-  .game-name { font-size: 18px; font-weight: 700; }
-  .game-kind { font-size: 11px; color: #6b7183; letter-spacing: .04em; }
-  .game-desc { margin-top: 9px; color: #8b91a3; font-size: 14px; line-height: 1.6; }
+  /* 실제 게임 화면. 글로 설명하는 것보다 이게 빠르다. */
+  .shot {
+    display: block;
+    width: 100%;
+    /* height:auto 가 없으면 <img height="800"> 속성이 그대로 높이가 되어
+       그림이 8배로 확대된다. aspect-ratio는 한쪽이 auto일 때만 먹는다. */
+    height: auto;
+    aspect-ratio: 7 / 5;
+    object-fit: cover;
+    object-position: top center;
+    background: #12141a;
+    border-bottom: 1px solid #232833;
+  }
+
+  .body { padding: 18px 20px 20px; }
+
+  .game-top { display: flex; align-items: baseline; gap: 9px; flex-wrap: wrap; }
+  .game-name { font-size: 19px; font-weight: 700; }
+  .game-kind {
+    font-size: 11px;
+    font-weight: 700;
+    color: #8b91a3;
+    background: #232833;
+    border-radius: 999px;
+    padding: 3px 9px;
+  }
+
+  .game-desc { margin-top: 10px; color: #8b91a3; font-size: 14px; line-height: 1.6; }
 
   /* 게임의 핵심 규칙을 한 줄로 */
   .game-rule {
-    margin-top: 12px;
+    margin-top: 13px;
     font-size: 13px;
     color: #b6bcca;
     background: #12141a;
     border-radius: 8px;
-    padding: 9px 12px;
+    padding: 10px 12px;
   }
   .k-chips { color: #5bc8ff; }
   .k-mult  { color: #ff5b7b; }
   .k-chain { color: #7bff9b; }
   .k-lie   { color: #ffd75b; }
 
-  footer { margin-top: 36px; color: #565c6e; font-size: 13px; line-height: 1.7; }
+  /* 한 판이 얼마나 걸리는지 — 누르기 전에 제일 궁금한 것 */
+  .meta { margin-top: 13px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .meta span {
+    font-size: 11.5px;
+    color: #6b7183;
+    border: 1px solid #2a3040;
+    border-radius: 999px;
+    padding: 3px 9px;
+  }
+
+  .play { margin-top: 15px; font-size: 13.5px; font-weight: 700; color: #5bc8ff; }
+
+  footer { margin-top: 34px; color: #565c6e; font-size: 13px; line-height: 1.7; }
 
   /* 인스타 링크 — 새 게임 소식을 받을 수 있는 유일한 통로라 눈에 띄게 */
   .ig {
@@ -101,6 +136,11 @@
   }
   .ig:hover { background: #1e222b; border-color: #444d61; }
   .ig-mark { color: #ff5b7b; font-size: 15px; }
+
+  /* 마우스가 없는 기기에서는 들어올리는 효과가 의미가 없다 */
+  @media (hover: hover) {
+    .game:hover { transform: translateY(-2px); border-color: #333a4a; }
+  }
 </style>
 </head>
 <body>
@@ -116,21 +156,31 @@
 
   <div class="games">
     <a class="game" href="/first-game/">
-      <div class="game-top">
-        <span class="game-name" id="g1-name"></span>
-        <span class="game-kind" id="g1-kind"></span>
+      <img class="shot" id="g1-shot" src="shots/chain-ko.webp" width="1120" height="800" alt="">
+      <div class="body">
+        <div class="game-top">
+          <span class="game-name" id="g1-name"></span>
+          <span class="game-kind" id="g1-kind"></span>
+        </div>
+        <p class="game-desc" id="g1-desc"></p>
+        <div class="game-rule" id="g1-rule"></div>
+        <div class="meta" id="g1-meta"></div>
+        <div class="play" id="g1-play"></div>
       </div>
-      <p class="game-desc" id="g1-desc"></p>
-      <div class="game-rule" id="g1-rule"></div>
     </a>
 
     <a class="game" href="/testimony/">
-      <div class="game-top">
-        <span class="game-name" id="g2-name"></span>
-        <span class="game-kind" id="g2-kind"></span>
+      <img class="shot" id="g2-shot" src="shots/testimony-ko.webp" width="1120" height="800" alt="" loading="lazy">
+      <div class="body">
+        <div class="game-top">
+          <span class="game-name" id="g2-name"></span>
+          <span class="game-kind" id="g2-kind"></span>
+        </div>
+        <p class="game-desc" id="g2-desc"></p>
+        <div class="game-rule" id="g2-rule"></div>
+        <div class="meta" id="g2-meta"></div>
+        <div class="play" id="g2-play"></div>
       </div>
-      <p class="game-desc" id="g2-desc"></p>
-      <div class="game-rule" id="g2-rule"></div>
     </a>
   </div>
 
@@ -148,23 +198,39 @@ const I18N = {
   ko: {
     title: '만든 게임들',
     intro: '브라우저에서 바로 되는 작은 게임들입니다. 설치도 가입도 없고, 폰에서도 됩니다.',
+    play:  '눌러서 바로 하기 →',
+
     g1name: '연쇄',   g1kind: '카드 로그라이트',
     g1desc: '포커 족보로 점수를 내는데, 규칙이 하나 다릅니다. 직전에 낸 패보다 칩이 높아야 배수가 쌓이고, 낮으면 처음으로 돌아갑니다. 그래서 좋은 패를 아무 때나 낼 수 없습니다.',
     g1rule: '점수 = <span class="k-chips">칩</span> × <span class="k-mult">배수</span> × <span class="k-chain">연쇄</span>',
+    g1meta: ['한 판 10~15분', '매일 새 문제', '순위표'],
+    g1alt:  '연쇄 게임 화면 — 칩 30 × 배수 2 × 연쇄 1 과 손패 카드들',
+
     g2name: '증언',   g2kind: '추리',
     g2desc: '용의자 중 범인 한 명을 찾습니다. 증언 가운데 몇 개가 거짓인지만 알려주고, 누가 거짓말을 했는지는 알려주지 않습니다.',
     g2rule: '<span class="k-lie">거짓의 개수</span>만 알려준다. 누구인지는 직접 좁혀야 한다',
+    g2meta: ['사건 12개 연속', '기회 3번', '제한시간'],
+    g2alt:  '증언 게임 화면 — 용의자 다섯 명의 진술 목록',
+
     foot: '새 게임 소식과 피드백은 인스타로 받고 있어요.',
   },
   en: {
     title: 'Games I made',
     intro: 'Small games that run right in your browser. No install, no sign-up, works on phones.',
+    play:  'Tap to play →',
+
     g1name: 'Chain', g1kind: 'Card roguelite',
     g1desc: 'A poker scoring game with one twist: your multiplier only grows if each hand beats the last one in chips. Play a weaker hand and it resets. So you can never spend your best hand whenever you like.',
     g1rule: 'Score = <span class="k-chips">Chips</span> × <span class="k-mult">Mult</span> × <span class="k-chain">Chain</span>',
+    g1meta: ['10–15 min a run', 'New daily puzzle', 'Leaderboard'],
+    g1alt:  'Chain gameplay — 30 chips × 2 mult × 1 chain, with a hand of cards',
+
     g2name: 'Testimony', g2kind: 'Deduction',
     g2desc: 'Find the culprit among the suspects. You are told how many of the statements are lies — never which ones.',
     g2rule: 'You only learn <span class="k-lie">how many</span> are lying. Who, you work out yourself',
+    g2meta: ['12 cases in a row', '3 chances', 'Timed'],
+    g2alt:  'Testimony gameplay — five suspects and their statements',
+
     foot: 'New games and feedback — find me on Instagram.',
   },
 };
@@ -184,15 +250,24 @@ let LANG = detectLang();
 
 function apply() {
   const t = I18N[LANG];
-  const set = (id, v, html) => {
-    const el = document.getElementById(id);
-    if (html) el.innerHTML = v; else el.textContent = v;
-  };
+  const set  = (id, v) => document.getElementById(id).textContent = v;
+  const html = (id, v) => document.getElementById(id).innerHTML  = v;
+  const chips = (id, list) =>
+    document.getElementById(id).innerHTML = list.map(x => `<span>${x}</span>`).join('');
+
   set('t-title', t.title);  set('t-intro', t.intro);  set('t-foot', t.foot);
-  set('g1-name', t.g1name); set('g1-kind', t.g1kind); set('g1-desc', t.g1desc);
-  set('g1-rule', t.g1rule, true);
-  set('g2-name', t.g2name); set('g2-kind', t.g2kind); set('g2-desc', t.g2desc);
-  set('g2-rule', t.g2rule, true);
+
+  for (const n of ['1', '2']) {
+    set(`g${n}-name`, t[`g${n}name`]);
+    set(`g${n}-kind`, t[`g${n}kind`]);
+    set(`g${n}-desc`, t[`g${n}desc`]);
+    set(`g${n}-play`, t.play);
+    html(`g${n}-rule`, t[`g${n}rule`]);
+    chips(`g${n}-meta`, t[`g${n}meta`]);
+    const img = document.getElementById(`g${n}-shot`);
+    img.alt = t[`g${n}alt`];
+    img.src = `shots/${n === '1' ? 'chain' : 'testimony'}-${LANG}.webp`;
+  }
 
   document.title = t.title;
   document.documentElement.lang = LANG;
